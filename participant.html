@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Participant</title>
+    <script src='https://meet.jit.si/external_api.js'></script>
+</head>
+
+<body>
+    <input type="text" placeholder="Enter Your Name" class="name">
+    <input type="text" placeholder="Enter Meeting ID" class="meeting-id">
+    <br>
+    <button id="join-meeting">Join Meeting</button>
+    <div id="meet"></div>
+
+    <script>
+
+        let api = null;
+
+        // admins = { focus@auth.jitsi.example.com };
+        // YG-620119876500-INDIA
+
+        function StartMeeting(rName, dName) {
+            const domain = 'meet.jit.si';
+
+            // let room = 'YG-'+(new Date()).getTime();
+
+            const options = {
+                roomName: rName,
+                width: 900,
+                height: 700,
+                parentNode: document.querySelector('#meet'),
+                userInfo: {
+                    displayName: dName
+                },
+
+                configOverwrite: {
+                    // doNotStoreRoom: true,
+                    startWithVideoMuted: true,
+                    startWithAudioMuted: true,
+                    // prejoinPageEnabled: false,
+                    // disableRemoteMute: true,
+                },
+
+                interfaceConfigOverwrite: {
+                    DISPLAY_WELCOME_PAGE_CONTENT: false,
+                    TOOLBAR_BUTTONS: []
+                },
+
+                onload: function () {
+                    alert('loaded');
+                }
+            };
+
+            api = new JitsiMeetExternalAPI(domain, options);
+
+            api.addEventListeners({
+                participantJoined: function (data) {
+                    console.log('participantJoined', data);
+                },
+                participantLeft: function (data) {
+                    console.log('participantLeft', data);
+                },
+                readyToClose: function(){
+                    alert('Going to close');
+                }
+            });
+
+            api.executeCommand('subject', roomName);
+        }
+
+        document.querySelector("#join-meeting").onclick = () => {
+            let roomName = document.querySelector(".meeting-id").value;
+            let dName = document.querySelector(".name").value;
+
+            console.log(roomName,"--",dName);
+
+            StartMeeting(roomName, dName);
+        };
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <script src='https://meet.jit.si/external_api.js'></script>
+</head>
+<body>
+    <br>
+    <button id="start-meet">Start Meeting</button>
+    <button id="end-meet">End Call</button>
+
+    <div id="meet"></div>
+
+    <script>
+
+        let api = null;
+      
+        // admins = { focus@auth.jitsi.example.com };
+
+        function StartMeeting() {
+            const domain = 'meet.jit.si';
+
+            // let room = 'YG-'+(new Date()).getTime();
+            let room = "YG-620119876500-INDIA";
+
+            const options = {
+                roomName: room,
+                width: 900,
+                height: 700,
+                parentNode: document.querySelector('#meet'),
+                interfaceConfigOverwrite: {
+                    DISPLAY_WELCOME_PAGE_CONTENT: false,
+                },
+
+                configOverwrite:{
+                    startWithAudioMuted: false,
+                    startWithVideoMuted: false,
+                },
+
+                onload: function () {
+                    alert('loaded');
+                }
+            };
+
+            api = new JitsiMeetExternalAPI(domain, options);
+           
+            api.addEventListeners({
+                readyToClose: function(){
+                    alert('Going to close');
+                }
+            });
+
+            api.executeCommand('subject', 'Project');
+        }
+
+        function EndCall(){
+            api.executeCommand('hangup');
+        }
+
+        document.querySelector("#start-meet").onclick = ()=>{
+            StartMeeting();
+            // console.log("start--",api);
+        };
+
+        document.querySelector("#end-meet").onclick = ()=>{
+            EndCall();
+            // console.log("end--1",api);
+        };
+
+    </script>
+</body>
+</html>
